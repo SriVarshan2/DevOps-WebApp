@@ -32,4 +32,21 @@ jobs:
         run: npm run build
 
       - name: Build successful
+        if: success()
         run: echo "CI Build Successful"
+
+      - name: Send Slack Success Notification
+        if: success()
+        run: |
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            --data '{"text":"✅ CI/CD Pipeline Successful - DevOps-WebApp"}' \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
+
+      - name: Send Slack Failure Notification
+        if: failure()
+        run: |
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            --data '{"text":"❌ CI/CD Pipeline Failed - DevOps-WebApp"}' \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
